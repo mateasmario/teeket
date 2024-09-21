@@ -1,0 +1,61 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    top: 0;
+}
+
+.bodyContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Horizontally center */
+    align-items: center;     /* Vertically center */
+    margin: 0;
+    width: 100%;
+    z-index: 1;
+    padding: 2vh;
+}
+
+.listContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Horizontally center */
+    align-items: center;     /* Vertically center */
+    margin: 0;
+    width: 100%;
+    z-index: 1;
+    padding: 2vh;
+}
+
+.bodyContainer > * {
+    width: 50%;
+}
+
+.customForm {
+    padding: 20px;
+    border: 1px;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+}
+
+.customRow {
+    display: flex;
+    gap: 2vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+}
+
+.customColumn {
+    width: 50%;
+}
+
+.customButtonRow {
+    margin-top: 4vh;
+    margin-bottom: 1vh;
+}
+
+.customNavbar {
+    z-index: 5;
+    position: sticky;
+}

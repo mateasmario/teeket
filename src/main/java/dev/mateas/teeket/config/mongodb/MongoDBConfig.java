@@ -2,6 +2,7 @@ package dev.mateas.teeket.config.mongodb;
 
 import dev.mateas.teeket.config.mongodb.converter.LocalDateTimeReadConverter;
 import dev.mateas.teeket.config.mongodb.converter.LocalDateTimeWriteConverter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Configuration
 public class MongoDBConfig {
+    @Bean
     public MongoCustomConversions mongoCustomConversions() {
         List<Converter<?, ?>> converterList = new ArrayList<>();
         converterList.add(new LocalDateTimeReadConverter());
