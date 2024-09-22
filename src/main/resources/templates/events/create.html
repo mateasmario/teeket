@@ -12,16 +12,16 @@
 
 <div class="main">
     <form th:action="@{/events/create}" method="POST" class="customForm">
-        <fieldset>
+        <fieldset class="form">
             <div>
                 <h3>Generate new tickets</h3>
             </div>
-            <div>
+            <div class="form-input">
                 <label for="name" class="form-label mt-4">Name of the event</label>
                 <input type="text" class="form-control" id="name"
                        placeholder="e.g. 'Team Meeting'" name="name" required>
             </div>
-            <div>
+            <div class="form-input">
                 <label for="eventType" class="form-label mt-4">Event type</label>
                 <select id="eventType" name="eventType">
                     <option value="STANDARD" default="true">Standard (up to 50 participants)</option>
@@ -29,8 +29,9 @@
                     <option value="OVERCROWDED">Overcrowded (100-250 participants)</option>
                 </select>
             </div>
-
-            <input type="Submit" value="Create event" />
+            <div class="button-container">
+                <button type="Submit">Create event</button>
+            </div>
         </fieldset>
     </form>
 </div>

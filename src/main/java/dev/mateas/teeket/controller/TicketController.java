@@ -49,4 +49,21 @@ public class TicketController {
 
         return redirectView;
     }
-}
+
+    @RequestMapping(value="events/{eventId}/tickets/generate", method=RequestMethod.GET)
+    public ModelAndView ticketGenerateGet(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId, @RequestParam(value="errorMessage", required = false) String errorMessage) {
+        ModelAndView modelAndView = new ModelAndView("tickets/generate.html");
+
+        try {
+            long ticketCount = ticketService.getAvailableTicketCount(principal.getName(), eventId);
+            modelAndView.addObject("ticketCount", ticketCount);
+        } catch (GenericException e) {
+            modelAndView.addObject("errorMessage", e.getAdditionalMessage());
+        }
+
+        if (errorMessage != null) {
+            modelAndView.addObject("errorMessage", errorMessage);
+        }
+
+        return modelAndView;
+    }}

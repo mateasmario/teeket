@@ -12,25 +12,25 @@
 <div th:insert="~{message.html :: message}"></div>
 
 <div class="main">
-    <form th:action="@{/login}" method="POST" class="customForm">
-        <fieldset>
+    <form th:action="@{/login}" method="POST">
+        <fieldset class="form">
             <div>
                 <h3>Sign in to your account</h3>
                 <p>Want to register for a new account? <a href="register">Click here</a></p>
             </div>
-            <div>
-                <label for="email" class="form-label mt-4">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
-                       placeholder="e.g. johndoe@teeket.io" name="username" required>
+            <div class="form-input">
+                    <label for="email" class="form-label mt-4">Email address</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                           placeholder="e.g. johndoe@teeket.io" name="username" required>
             </div>
-            <div>
+            <div class="form-input">
                 <label for="password" class="form-label mt-4">Password</label>
                 <input type="password" class="form-control" id="password" placeholder="Type in your password"
                        autocomplete="off" name="password" required>
             </div>
-            <div class="customRow customButtonRow">
-                <button type="submit" class="btn btn-primary">Login</button>
-                <button class="btn btn-primary" disabled>Forgot Password</button>
+            <div class="button-container">
+                <button type="submit">Login</button>
+                <button disabled>Forgot Password</button>
             </div>
         </fieldset>
     </form>

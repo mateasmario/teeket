@@ -12,9 +12,9 @@
 <div th:insert="~{message.html :: message}"></div>
 
 <div class="main">
-    <a th:href="@{/events/create}">Create a new event</a>
+    <a th:href="@{/events/create}"><button class="btn">Create a new event</button></a>
 
-    <table class="table table-hover">
+    <table class="table">
         <thead>
         <td><strong>Name</strong></td>
         <td><strong>Creation date</strong></td>
@@ -25,8 +25,10 @@
             <td th:text="${event.name}"></td>
             <td th:text="${#temporals.format(event.creationDate, 'MMM dd, yyyy')}"></td>
             <td th:text="${event.eventType}"></td>
-            <td><a th:href="@{/events/{eventId}/tickets(eventId=${event.id})}">View Tickets</a> <a href="#" th:data-parameter1="${event.id}" th:onclick="deleteEvent(this.getAttribute('data-parameter1'))">Delete
-                Event</td>
+            <td class="button-container">
+                <a th:href="@{/events/{eventId}/tickets(eventId=${event.id})}"><button>View Tickets</button></a>
+                <a href="#" th:data-parameter1="${event.id}" th:onclick="deleteEvent(this.getAttribute('data-parameter1'))"><button>Delete Event</button></a>
+            </td>
         </tr>
     </table>
 

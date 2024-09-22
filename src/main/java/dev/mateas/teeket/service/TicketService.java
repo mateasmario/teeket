@@ -54,4 +54,21 @@ public class TicketService {
 
         ticketRepository.delete(ticket);
     }
+
+    public long getAvailableTicketCount(String username, String eventId) throws TicketWithSpecifiedIdDoesNotExist, EventDoesNotBelongToRequesterException {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if (!eventOptional.get().getOwner().equals(username)) {
+            throw new EventDoesNotBelongToRequesterException();
+        }
+
+        Event event = eventOptional.get();
+        long currentCount = ticketRepository.countByEvent(event.getId());
+
+        return switch (event.getEventType()) {
+            case STANDARD -> 50 - currentCount;
+            case EXTENDED -> 100 - currentCount;
+            case OVERCROWDED -> 250 - currentCount;
+        };
+    }
 }

@@ -13,45 +13,41 @@
 
 <div class="main">
     <form th:action="@{/register}" method="POST" class="customForm">
-        <fieldset>
+        <fieldset class="form">
             <div>
                 <h3>Create a new account</h3>
                 <p>Already have an account? <a href="login">Click here</a></p>
             </div>
-            <div>
+            <div class="form-input">
                 <label for="email" class="form-label mt-4">Email address</label>
                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
                        placeholder="e.g. johndoe@teeket.io" name="username" required>
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
                     else.</small>
             </div>
-            <div class="customRow">
-                <div class="customColumn">
-                    <label for="firstName" class="form-label mt-4">First Name</label>
-                    <input type="text" class="form-control" id="firstName"
-                           placeholder="John" name="firstName" required>
-                </div>
-                <div class="customColumn">
-                    <label for="lastName" class="form-label mt-4">Last Name</label>
-                    <input type="text" class="form-control" id="lastName"
-                           placeholder="Doe" name="lastName" required>
-                </div>
+            <div class="form-input">
+                <label for="firstName" class="form-label mt-4">First Name</label>
+                <input type="text" class="form-control" id="firstName"
+                       placeholder="John" name="firstName" required>
+                <label for="lastName" class="form-label mt-4">Last Name</label>
+                <input type="text" class="form-control" id="lastName"
+                       placeholder="Doe" name="lastName" required>
             </div>
-            <div class="customRow">
-                <div class="customColumn">
+            <div class="form-row">
+                <div class="form-input form-row-element">
                     <label for="password" class="form-label mt-4">Password</label>
                     <input type="password" class="form-control" id="password" placeholder="Type in a secure password"
                            autocomplete="off" name="password" required>
                 </div>
-                <div class="customColumn">
+                <div class="form-input form-row-element">
                     <label for="confirmPassword" class="form-label mt-4">Confirm Password</label>
                     <input type="password" class="form-control" id="confirmPassword"
                            placeholder="Type in a secure password"
                            autocomplete="off" name="confirmPassword" required>
                 </div>
             </div>
-            <div class="customRow customButtonRow">
-                <button type="submit" class="btn btn-primary">Register</button>
+            <div class="button-container">
+                <button type="submit">Register</button>
             </div>
         </fieldset>
     </form>

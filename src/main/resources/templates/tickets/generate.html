@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Tickets - Teeket</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:insert="~{navbar.html :: navbar}"></div>
+
+<div th:insert="~{message.html :: message}"></div>
+
+<div class="main">
+    <form th:action="@{/events/create}" method="POST" class="customForm">
+        <fieldset class="form">
+            <div>
+                <h3>Generate tickets for your event</h3>
+            </div>
+            <div>
+                <label for="range" class="form-label mt-4" id="ticketLabel">Number of tickets: 1</label>
+                <input type="range" min="1" th:max="${ticketCount}" value="1" class="slider" id="range" oninput="updateValue()" name="range">
+            </div>
+
+            <div class="button-container">
+                <button type="Submit">Generate</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+    <script>
+        function updateValue() {
+            document.getElementById("ticketLabel").innerHTML = "Number of tickets: " + document.getElementById("range").value;
+        }
+    </script>
+
+</body>
+</html>

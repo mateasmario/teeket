@@ -8,4 +8,5 @@ import java.util.List;
 public interface TicketRepository extends MongoRepository<Ticket, String> {
     List<Ticket> findByEvent(String event);
     void deleteByEvent(String event);
+    Long countByEvent(String event);
 }
