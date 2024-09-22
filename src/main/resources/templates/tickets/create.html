@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create event - Teeket</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:insert="~{navbar.html :: navbar}"></div>
+
+<div th:insert="~{message.html :: message}"></div>
+
+<div class="main">
+    <form th:action="@{/events/create}" method="POST" class="customForm">
+        <fieldset>
+            <div>
+                <h3>Create a new event</h3>
+            </div>
+            <div>
+                <label for="name" class="form-label mt-4">Name of the event</label>
+                <input type="text" class="form-control" id="name"
+                       placeholder="e.g. 'Team Meeting'" name="name" required>
+            </div>
+            <div>
+                <label for="eventType" class="form-label mt-4">Event type</label>
+                <select id="eventType" name="eventType">
+                    <option value="STANDARD" default="true">Standard (up to 50 participants)</option>
+                    <option value="EXTENDED">Extended (50-100 participants)</option>
+                    <option value="OVERCROWDED">Overcrowded (100-250 participants)</option>
+                </select>
+            </div>
+
+            <input type="Submit" value="Create event" />
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>

@@ -2,35 +2,30 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teeket</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-body-tertiary customNavbar" th:fragment="navbar">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">teeket</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04"
-                aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarColor04">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/events}">My Events</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/logout}" method="POST">
-                        <input type="submit" class="nav-link" th:href="@{/logout}" value="Logout"></input>
-                    </form>
-                </li>
-                <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" th:href="@{/login}">Login</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" th:href="@{/register}">Register</a>
-                </li>
-            </ul>
+<nav class="navbar" th:fragment="navbar">
+    <div class="navbar-title">
+        <a th:href="@{/}">teeket</a>
+    </div>
+    <div class="navbar-elements">
+        <div class="navbar-item" sec:authorize="isAuthenticated()">
+            <a th:href="@{/events}">My Events</a>
+        </div>
+        <div class="navbar-item" sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="POST">
+                <input type="submit" value="Logout" class="navbar-item navbar-submit">
+            </form>
+        </div>
+        <div class="navbar-item" sec:authorize="isAnonymous()">
+            <a th:href="@{/login}">Login</a>
+        </div>
+        <div class="navbar-item" sec:authorize="isAnonymous()">
+            <a th:href="@{/register}">Register</a>
         </div>
     </div>
 </nav>

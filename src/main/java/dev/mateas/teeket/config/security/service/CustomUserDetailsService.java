@@ -1,6 +1,6 @@
 package dev.mateas.teeket.config.security.service;
 
-import dev.mateas.teeket.entity.User;
+import dev.mateas.teeket.entity.authentication.User;
 import dev.mateas.teeket.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

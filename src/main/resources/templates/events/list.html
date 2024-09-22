@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Events - Teeket</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:insert="~{navbar.html :: navbar}"></div>
+
+<div th:insert="~{message.html :: message}"></div>
+
+<div class="main">
+    <a th:href="@{/events/create}">Create a new event</a>
+
+    <table class="table table-hover">
+        <thead>
+        <td><strong>Name</strong></td>
+        <td><strong>Creation date</strong></td>
+        <td><strong>Type</strong></td>
+        <td><strong>Actions</strong></td>
+        </thead>
+        <tr th:each="event : ${eventList}">
+            <td th:text="${event.name}"></td>
+            <td th:text="${#temporals.format(event.creationDate, 'MMM dd, yyyy')}"></td>
+            <td th:text="${event.eventType}"></td>
+            <td><a th:href="@{/events/{eventId}/tickets(eventId=${event.id})}">View Tickets</a> <a href="#" th:data-parameter1="${event.id}" th:onclick="deleteEvent(this.getAttribute('data-parameter1'))">Delete
+                Event</td>
+        </tr>
+    </table>
+
+    <script>
+        function deleteEvent(eventId) {
+            if (confirm("Are you sure you want to delete this event?")) {
+                url = '/events/' + eventId + '/delete';
+                window.location.href = url;
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

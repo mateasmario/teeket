@@ -1,7 +1,7 @@
 package dev.mateas.teeket.controller.authentication;
 
 import dev.mateas.teeket.dto.authentication.RegisterDto;
-import dev.mateas.teeket.exception.authentication.RegisterException;
+import dev.mateas.teeket.exception.GenericException;
 import dev.mateas.teeket.service.authentication.RegisterService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ public class RegisterController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView registerGet() {
-        ModelAndView modelAndView = new ModelAndView("register.html");
+        ModelAndView modelAndView = new ModelAndView("authentication/register.html");
         return modelAndView;
     }
 
@@ -30,11 +30,11 @@ public class RegisterController {
             httpServletRequest.login(registerDto.getUsername(), registerDto.getPassword());
             modelAndView = new ModelAndView("redirect:/");
 
-        } catch (RegisterException e) {
-            modelAndView = new ModelAndView("register.html");
-            modelAndView.addObject("errorMessage", e.getAuthenticationMessage());
+        } catch (GenericException e) {
+            modelAndView = new ModelAndView("authentication/register.html");
+            modelAndView.addObject("errorMessage", e.getAdditionalMessage());
         } catch (ServletException e) {
-            modelAndView = new ModelAndView("register.html");
+            modelAndView = new ModelAndView("authentication/register.html");
             modelAndView.addObject("errorMessage", "There was a servlet error while trying to create an account for you.");
         }
 

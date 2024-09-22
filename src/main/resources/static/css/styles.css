@@ -1,61 +1,98 @@
+@font-face {
+    font-family: Outfit;
+    src: url('../fonts/Outfit-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: Lato;
+    src: url('../fonts/Lato-Regular.ttf');
+}
+
 html, body {
     margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    top: 0;
-}
-
-.bodyContainer {
+    padding: 0.5vh;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Horizontally center */
-    align-items: center;     /* Vertically center */
-    margin: 0;
-    width: 100%;
-    z-index: 1;
-    padding: 2vh;
+    gap: 1vh;
 }
 
-.listContainer {
+a {
+    text-decoration: none;
+}
+
+.navbar {
+    flex: 1;
+    position: sticky;
+    background-color: #f5426f;
     display: flex;
-    flex-direction: column;
-    justify-content: center; /* Horizontally center */
-    align-items: center;     /* Vertically center */
-    margin: 0;
-    width: 100%;
-    z-index: 1;
+    align-items: center;
+    justify-content: space-between;
+    height: 5vh;
+    min-height: 40px;
     padding: 2vh;
+    overflow: hidden;
+    border-radius: 5px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 2.5px 2.5px 2.5px #940d2f;
 }
 
-.bodyContainer > * {
-    width: 50%;
+.navbar * {
+    color: white;
+    font-size: 18px;
+    font-family: Outfit;
 }
 
-.customForm {
-    padding: 20px;
-    border: 1px;
-    border-radius: 5px;
-    background-color: #f5f5f5;
+.navbar-title {
+    flex: 1;
 }
 
-.customRow {
+.navbar-elements {
     display: flex;
     gap: 2vh;
-    margin-top: 1vh;
-    margin-bottom: 1vh;
 }
 
-.customColumn {
-    width: 50%;
+.navbar-item > a {
+    text-decoration: none;
+    color: inherit;
 }
 
-.customButtonRow {
-    margin-top: 4vh;
-    margin-bottom: 1vh;
+.navbar-item:hover {
+    color: #ffccd9;
 }
 
-.customNavbar {
-    z-index: 5;
-    position: sticky;
+.navbar-submit {
+    background: none;
+    border: 0;
+    padding: 0;
+}
+
+.navbar-submit:hover {
+    cursor: pointer;
+}
+
+.main {
+    flex: 1;
+    background-color: #f2f2f2;
+    border-radius: 20px;
+    color: black;
+    font-family: Lato;
+    font-size: 15px;
+    padding: 2vh;
+    box-shadow: 2.5px 2.5px 2.5px #c2c2c2;
+}
+
+.notification {
+    flex: 1;
+    background-color: #f2f2f2;
+    border-radius: 20px;
+    color: black;
+    font-family: Lato;
+    font-size: 15px;
+    padding: 2vh;
+    box-shadow: 2.5px 2.5px 2.5px #c2c2c2;
+}
+
+fieldset {
+    border: 0;
 }

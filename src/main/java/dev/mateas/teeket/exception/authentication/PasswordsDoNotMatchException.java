@@ -1,8 +1,10 @@
 package dev.mateas.teeket.exception.authentication;
 
-public class PasswordsDoNotMatchException extends RegisterException {
+import dev.mateas.teeket.exception.GenericException;
+
+public class PasswordsDoNotMatchException extends GenericException {
     @Override
-    public String getAuthenticationMessage() {
+    public String getAdditionalMessage() {
         return "The two passwords do not match.";
     }
 }

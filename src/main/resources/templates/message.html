@@ -1,14 +1,15 @@
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
-    <title>Home - Teeket</title>
+    <title>Teeket</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body>
-    <div th:insert="~{navbar.html :: navbar}" ></div>
+<div class="notification" th:fragment="message" th:if="${errorMessage != null}">
+    <strong>Notification: </strong> <span th:text="${errorMessage}"></span>
+</div>
 </body>
 </html>

@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Teeket</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body>
 <div th:insert="~{navbar.html :: navbar}"></div>
 
-<div class="bodyContainer">
+<div th:insert="~{message.html :: message}"></div>
+
+<div class="main">
     <form th:action="@{/login}" method="POST" class="customForm">
         <fieldset>
             <div>
@@ -19,12 +21,12 @@
             <div>
                 <label for="email" class="form-label mt-4">Email address</label>
                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
-                       placeholder="e.g. johndoe@teeket.io" name="username">
+                       placeholder="e.g. johndoe@teeket.io" name="username" required>
             </div>
             <div>
                 <label for="password" class="form-label mt-4">Password</label>
                 <input type="password" class="form-control" id="password" placeholder="Type in your password"
-                       autocomplete="off" name="password">
+                       autocomplete="off" name="password" required>
             </div>
             <div class="customRow customButtonRow">
                 <button type="submit" class="btn btn-primary">Login</button>

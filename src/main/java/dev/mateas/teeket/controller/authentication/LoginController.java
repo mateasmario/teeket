@@ -24,7 +24,7 @@ public class LoginController {
             }
         }
 
-        ModelAndView modelAndView = new ModelAndView("login.html");
+        ModelAndView modelAndView = new ModelAndView("authentication/login.html");
         modelAndView.addObject("errorMessage", errorMessage);
         return modelAndView;
     }

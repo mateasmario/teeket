@@ -1,4 +1,4 @@
-package dev.mateas.teeket.entity;
+package dev.mateas.teeket.entity.authentication;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

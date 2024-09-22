@@ -15,6 +15,13 @@ public class Event {
     private EventType eventType;
     private LocalDateTime creationDate;
 
+    public Event(String owner, String name, EventType eventType, LocalDateTime creationDate) {
+        this.owner = owner;
+        this.name = name;
+        this.eventType = eventType;
+        this.creationDate = creationDate;
+    }
+
     public String getId() {
         return id;
     }

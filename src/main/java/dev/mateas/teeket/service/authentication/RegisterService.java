@@ -1,7 +1,7 @@
 package dev.mateas.teeket.service.authentication;
 
 import dev.mateas.teeket.dto.authentication.RegisterDto;
-import dev.mateas.teeket.entity.User;
+import dev.mateas.teeket.entity.authentication.User;
 import dev.mateas.teeket.exception.authentication.EmailAlreadyExistsException;
 import dev.mateas.teeket.exception.authentication.PasswordDoesNotSatisfyConstraintsException;
 import dev.mateas.teeket.exception.authentication.PasswordsDoNotMatchException;

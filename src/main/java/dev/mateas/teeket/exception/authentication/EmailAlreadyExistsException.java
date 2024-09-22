@@ -1,8 +1,10 @@
 package dev.mateas.teeket.exception.authentication;
 
-public class EmailAlreadyExistsException extends RegisterException {
+import dev.mateas.teeket.exception.GenericException;
+
+public class EmailAlreadyExistsException extends GenericException {
     @Override
-    public String getAuthenticationMessage() {
+    public String getAdditionalMessage() {
         return "The specified email address already exists.";
     }
 }

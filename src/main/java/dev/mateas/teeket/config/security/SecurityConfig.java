@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/login/**").anonymous()
                         .requestMatchers("/register/**").anonymous()
                         .requestMatchers("/css/**").permitAll()
+                        .requestMatchers("/fonts/**").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();
