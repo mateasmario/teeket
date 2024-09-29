@@ -50,6 +50,7 @@ public class ZipFileGenerator {
         FileInputStream fileInputStream = new FileInputStream(barcode);
         byte[] data = new byte[(int) barcode.length()];
         fileInputStream.read(data);
+        fileInputStream.close();
         return data;
     }
 }
