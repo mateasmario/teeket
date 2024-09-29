@@ -19,9 +19,9 @@
                 <p>Want to register for a new account? <a href="register">Click here</a></p>
             </div>
             <div class="form-input">
-                    <label for="email" class="form-label mt-4">Email address</label>
-                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
-                           placeholder="e.g. johndoe@teeket.io" name="username" required>
+                <label for="email" class="form-label mt-4">Email address</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                       placeholder="e.g. johndoe@teeket.io" name="username" required>
             </div>
             <div class="form-input">
                 <label for="password" class="form-label mt-4">Password</label>
@@ -30,6 +30,18 @@
             </div>
             <div class="button-container">
                 <button type="submit">Login</button>
+                <a th:href="@{/oauth2/authorization/google}">
+                <button class="button-github">
+                    <img th:src="@{/brand-icons/github.png}" width="20" height="20">
+                    Sign in with GitHub
+                </button>
+                </a>
+                <a th:href="@{/oauth2/authorization/github}">
+                <button class="button-google">
+                    <img th:src="@{/brand-icons/google.png}" width="20" height="20">
+                    Sign in with Google
+                </button>
+                </a>
                 <button disabled>Forgot Password</button>
             </div>
         </fieldset>

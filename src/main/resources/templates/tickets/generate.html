@@ -11,14 +11,14 @@
 <div th:insert="~{message.html :: message}"></div>
 
 <div class="main">
-    <form th:action="@{/events/create}" method="POST" class="customForm">
+    <form th:action="@{/events/{eventId}/tickets/generate(eventId=${eventId})}" method="POST" class="customForm">
         <fieldset class="form">
             <div>
                 <h3>Generate tickets for your event</h3>
             </div>
             <div>
                 <label for="range" class="form-label mt-4" id="ticketLabel">Number of tickets: 1</label>
-                <input type="range" min="1" th:max="${ticketCount}" value="1" class="slider" id="range" oninput="updateValue()" name="range">
+                <input type="range" min="1" th:max="${ticketCount}" value="1" class="slider" id="range" oninput="updateValue()" name="ticketCount">
             </div>
 
             <div class="button-container">

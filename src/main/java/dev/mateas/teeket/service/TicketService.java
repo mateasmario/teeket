@@ -2,6 +2,7 @@ package dev.mateas.teeket.service;
 
 import dev.mateas.teeket.entity.Event;
 import dev.mateas.teeket.entity.Ticket;
+import dev.mateas.teeket.exception.GenericException;
 import dev.mateas.teeket.exception.event.EventDoesNotBelongToRequesterException;
 import dev.mateas.teeket.exception.event.EventWithSpecifiedIdDoesNotExistException;
 import dev.mateas.teeket.exception.ticket.CouldNotGenerateTicketException;
@@ -9,12 +10,16 @@ import dev.mateas.teeket.exception.ticket.TicketWithSpecifiedIdDoesNotExist;
 import dev.mateas.teeket.repository.EventRepository;
 import dev.mateas.teeket.repository.TicketRepository;
 import dev.mateas.teeket.type.TicketStatus;
+import dev.mateas.teeket.util.FileManagementUtils;
 import dev.mateas.teeket.util.QRCodeGenerator;
 import dev.mateas.teeket.util.StringGenerator;
+import dev.mateas.teeket.util.ZipFileGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,10 @@ public class TicketService {
     private StringGenerator stringGenerator;
     @Autowired
     private QRCodeGenerator qrCodeGenerator;
+    @Autowired
+    private ZipFileGenerator zipFileGenerator;
+
+    private static final String RESOURCES_DIR = Paths.get("src", "main", "resources").toString();
 
     public List<Ticket> getTickets(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
@@ -91,7 +100,7 @@ public class TicketService {
         };
     }
 
-    public List<Ticket> generateTickets(String username, String eventId, int ticketCount) throws EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException, CouldNotGenerateTicketException {
+    public String generateTickets(String username, String eventId, int ticketCount) throws EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException, CouldNotGenerateTicketException {
         List<Ticket> ticketList = new ArrayList<>();
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
@@ -115,11 +124,33 @@ public class TicketService {
             currentTicketCount++;
         }
 
-        return ticketList;
+        String zipName = null;
+
+        try {
+            zipName = zipFileGenerator.generateZipFile(ticketList);
+        } catch (IOException e) {
+            throw new CouldNotGenerateTicketException();
+        }
+
+        for(Ticket ticket : ticketList) {
+            File file = new File(FileManagementUtils.getBarcodeName(ticket));
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+
+        return zipName;
     }
 
     private Ticket generateCodeAndQR(String eventId) throws IOException {
-        String ticketId = stringGenerator.generateString(10);
+        String ticketId = null;
+        File file = null;
+
+        do {
+            ticketId = stringGenerator.generateString(10);
+            file = new File(Paths.get(RESOURCES_DIR, "temp", "barcodes", "QR_" + eventId + "_" + ticketId + ".png").toString());
+        } while(file.exists());
+
         qrCodeGenerator.generateQRCode(eventId, ticketId);
         return new Ticket(ticketId, LocalDateTime.now(), TicketStatus.VALID, eventId);
     }

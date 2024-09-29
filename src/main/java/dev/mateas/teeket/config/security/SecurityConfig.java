@@ -5,6 +5,7 @@ import dev.mateas.teeket.validator.PasswordValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,6 +38,7 @@ public class SecurityConfig {
         http
                 // Explicitly enable form login and specify the login page to be mapped at "/login"
                 .formLogin(form -> form.loginPage("/login").permitAll())
+                .oauth2Login(form -> form.loginPage("/login").permitAll())
                 .logout((logout) -> logout.logoutUrl("/logout").logoutSuccessUrl("/").permitAll())
 
                 // Specify required authentication levels for URL mappings
@@ -45,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/register/**").anonymous()
                         .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/fonts/**").permitAll()
+                        .requestMatchers("/brand-icons/**").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();

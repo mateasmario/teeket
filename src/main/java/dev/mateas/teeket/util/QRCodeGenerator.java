@@ -9,8 +9,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class QRCodeGenerator {
+    private static final String RESOURCES_DIR = Paths.get("src", "main", "resources").toString();
+
     public void generateQRCode(String eventId, String ticketId) throws IOException {
         BarcodeSettings settings = new BarcodeSettings();
         settings.setType(BarCodeType.QR_Code);
@@ -23,7 +26,9 @@ public class QRCodeGenerator {
 
         BarCodeGenerator barCodeGenerator = new BarCodeGenerator(settings);
         BufferedImage bufferedImage = barCodeGenerator.generateImage();
-        ImageIO.write(bufferedImage,"png",new File("QR_ " + eventId + "_" + ticketId + ".png"));
-        System.out.println("Complete!");
+
+        String path = Paths.get(RESOURCES_DIR, "temp", "barcodes").toString();
+        File file = new File(Paths.get(path, "QR_" + eventId + "_" + ticketId + ".png").toString());
+        ImageIO.write(bufferedImage,"png", file);
     }
 }
