@@ -2,10 +2,11 @@ package dev.mateas.teeket.service;
 
 import dev.mateas.teeket.entity.Event;
 import dev.mateas.teeket.entity.Ticket;
-import dev.mateas.teeket.exception.GenericException;
 import dev.mateas.teeket.exception.event.EventDoesNotBelongToRequesterException;
 import dev.mateas.teeket.exception.event.EventWithSpecifiedIdDoesNotExistException;
 import dev.mateas.teeket.exception.ticket.CouldNotGenerateTicketException;
+import dev.mateas.teeket.exception.ticket.CouldNotGenerateZipFileException;
+import dev.mateas.teeket.exception.ticket.TicketDoesNotBelongToSpecifiedEventIdException;
 import dev.mateas.teeket.exception.ticket.TicketWithSpecifiedIdDoesNotExist;
 import dev.mateas.teeket.repository.EventRepository;
 import dev.mateas.teeket.repository.TicketRepository;
@@ -21,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,28 +57,6 @@ public class TicketService {
         return ticketList;
     }
 
-    public void deleteTicket(String username, String ticketId) throws TicketWithSpecifiedIdDoesNotExist, EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException {
-        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
-
-        if (!ticketOptional.isPresent()) {
-            throw new TicketWithSpecifiedIdDoesNotExist();
-        }
-
-        Ticket ticket = ticketOptional.get();
-
-        Optional<Event> eventOptional = eventRepository.findById(ticket.getEvent());
-
-        if (eventOptional.isEmpty()) {
-            throw new EventWithSpecifiedIdDoesNotExistException();
-        }
-
-        if (!eventOptional.get().getOwner().equals(username)) {
-            throw new EventDoesNotBelongToRequesterException();
-        }
-
-        ticketRepository.delete(ticket);
-    }
-
     public long getAvailableTicketCount(String username, String eventId) throws TicketWithSpecifiedIdDoesNotExist, EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
@@ -100,8 +78,7 @@ public class TicketService {
         };
     }
 
-    public String generateTickets(String username, String eventId, int ticketCount) throws EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException, CouldNotGenerateTicketException {
-        List<Ticket> ticketList = new ArrayList<>();
+    public void createTickets(String username, String eventId, int ticketCount) throws EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException, CouldNotGenerateTicketException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
         if (eventOptional.isEmpty()) {
@@ -115,43 +92,106 @@ public class TicketService {
         int currentTicketCount = 0;
         while(currentTicketCount < ticketCount) {
             try {
-                Ticket ticket = generateCodeAndQR(eventId);
-                ticketList.add(ticket);
+                Ticket ticket = generateCode(eventId);
                 ticketRepository.insert(ticket);
             } catch (IOException e) {
                 throw new CouldNotGenerateTicketException();
             }
             currentTicketCount++;
         }
+    }
 
-        String zipName = null;
+    private Ticket generateCode(String eventId) throws IOException {
+        String ticketId = null;
+        boolean exists = false;
+
+        do {
+            ticketId = stringGenerator.generateString(10);
+            exists = ticketRepository.findById(ticketId).isPresent();
+        } while(exists);
+
+        return new Ticket(ticketId, LocalDateTime.now(), TicketStatus.VALID, eventId);
+    }
+
+    public String generateQRCodesAndZipFile(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, CouldNotGenerateZipFileException, CouldNotGenerateTicketException {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if (eventOptional.isEmpty()) {
+            throw new EventWithSpecifiedIdDoesNotExistException();
+        }
+
+        if (!eventOptional.get().getOwner().equals(username)) {
+            throw new EventDoesNotBelongToRequesterException();
+        }
+
+        Event event = eventOptional.get();
+        List<Ticket> ticketList = ticketRepository.findByEvent(event.getId());
+
+        for(Ticket ticket : ticketList) {
+            try {
+                qrCodeGenerator.generateQRCode(eventId, ticket.getCode());
+            } catch (IOException e) {
+                throw new CouldNotGenerateTicketException();
+            }
+        }
+
+        String zipName;
 
         try {
             zipName = zipFileGenerator.generateZipFile(ticketList);
         } catch (IOException e) {
-            throw new CouldNotGenerateTicketException();
+            throw new CouldNotGenerateZipFileException();
         }
 
         for(Ticket ticket : ticketList) {
             File file = new File(FileManagementUtils.getBarcodeName(ticket));
             if (file.exists()) {
-                file.delete();
+                boolean res = file.delete();
             }
         }
 
         return zipName;
     }
 
-    private Ticket generateCodeAndQR(String eventId) throws IOException {
-        String ticketId = null;
-        File file = null;
+    public void deleteTicket(String username, String eventId, String ticketId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExist, TicketDoesNotBelongToSpecifiedEventIdException {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        do {
-            ticketId = stringGenerator.generateString(10);
-            file = new File(Paths.get(RESOURCES_DIR, "temp", "barcodes", "QR_" + eventId + "_" + ticketId + ".png").toString());
-        } while(file.exists());
+        if (eventOptional.isEmpty()) {
+            throw new EventWithSpecifiedIdDoesNotExistException();
+        }
 
-        qrCodeGenerator.generateQRCode(eventId, ticketId);
-        return new Ticket(ticketId, LocalDateTime.now(), TicketStatus.VALID, eventId);
+        if (!eventOptional.get().getOwner().equals(username)) {
+            throw new EventDoesNotBelongToRequesterException();
+        }
+
+        Event event = eventOptional.get();
+
+        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+
+        if (!ticketOptional.isPresent()) {
+            throw new TicketWithSpecifiedIdDoesNotExist();
+        }
+
+        Ticket ticket = ticketOptional.get();
+
+        if (!ticket.getEvent().equals(eventId)) {
+            throw new TicketDoesNotBelongToSpecifiedEventIdException();
+        }
+
+        ticketRepository.delete(ticket);
+    }
+
+    public void deleteTickets(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExist, TicketDoesNotBelongToSpecifiedEventIdException {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if (eventOptional.isEmpty()) {
+            throw new EventWithSpecifiedIdDoesNotExistException();
+        }
+
+        if (!eventOptional.get().getOwner().equals(username)) {
+            throw new EventDoesNotBelongToRequesterException();
+        }
+
+        ticketRepository.deleteByEvent(eventId);
     }
 }

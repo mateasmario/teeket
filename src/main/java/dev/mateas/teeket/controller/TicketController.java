@@ -2,14 +2,9 @@ package dev.mateas.teeket.controller;
 
 import dev.mateas.teeket.entity.Ticket;
 import dev.mateas.teeket.exception.GenericException;
-import dev.mateas.teeket.exception.event.EventDoesNotBelongToRequesterException;
-import dev.mateas.teeket.exception.event.EventWithSpecifiedIdDoesNotExistException;
-import dev.mateas.teeket.exception.ticket.CouldNotGenerateTicketException;
 import dev.mateas.teeket.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.Principal;
@@ -49,20 +43,6 @@ public class TicketController {
         return modelAndView;
     }
 
-    @RequestMapping(value="events/{eventId}/tickets/{id}/delete", method=RequestMethod.GET)
-    public RedirectView ticketDelete(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId, @PathVariable String ticketId) {
-        RedirectView redirectView = new RedirectView("/events/" + eventId + "/tickets", true);
-
-        try {
-            ticketService.deleteTicket(principal.getName(), ticketId);
-            redirectAttributes.addAttribute("errorMessage", "Ticket has been deleted successfully.");
-        } catch (GenericException e) {
-            redirectAttributes.addAttribute("errorMessage", e.getAdditionalMessage());
-        }
-
-        return redirectView;
-    }
-
     @RequestMapping(value="events/{eventId}/tickets/generate", method=RequestMethod.GET)
     public ModelAndView ticketGenerateGet(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId, @RequestParam(value="errorMessage", required = false) String errorMessage) {
         ModelAndView modelAndView = new ModelAndView("tickets/generate.html");
@@ -84,24 +64,28 @@ public class TicketController {
 
     @RequestMapping(value="events/{eventId}/tickets/generate", method=RequestMethod.POST)
     public RedirectView ticketGeneratePost(Principal principal, @PathVariable String eventId, @RequestParam(value="errorMessage", required = false) String errorMessage, @RequestParam String ticketCount) {
-        RedirectView redirectView = null;
-
-        String zipName = null;
+        RedirectView redirectView = new RedirectView("/events/" + eventId + "/tickets");
 
         try {
-            zipName = ticketService.generateTickets(principal.getName(), eventId, Integer.parseInt(ticketCount));
-            redirectView = new RedirectView("/download/" + zipName);
-            redirectView.addStaticAttribute("eventId", eventId);
+            ticketService.createTickets(principal.getName(), eventId, Integer.parseInt(ticketCount));
+            redirectView.addStaticAttribute("errorMessage", "Tickets have been created successfully.");
         } catch (GenericException e) {
-            redirectView = new RedirectView("/events/" + eventId + "/tickets");
             redirectView.addStaticAttribute("errorMessage", e.getAdditionalMessage());
         }
 
         return redirectView;
     }
 
-    @RequestMapping(path = "/download/{zipName}", method = RequestMethod.GET)
-    public ResponseEntity<FileSystemResource> downloadGET(RedirectAttributes redirectAttributes, @PathVariable("zipName") String zipName) throws IOException {
+    @RequestMapping(path = "events/{eventId}/tickets/download", method = RequestMethod.GET)
+    public ResponseEntity<FileSystemResource> downloadGET(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId) throws IOException {
+        String zipName = null;
+
+        try {
+            zipName = ticketService.generateQRCodesAndZipFile(principal.getName(), eventId);
+        } catch (GenericException e) {
+            // ToDo: Add error message
+        }
+
         File file = new File(Paths.get(RESOURCES_DIR, "temp", "zip", zipName).toString());
 
         HttpHeaders respHeaders = new HttpHeaders();
@@ -112,5 +96,37 @@ public class TicketController {
         return new ResponseEntity<>(
                 new FileSystemResource(file), respHeaders, HttpStatus.OK
         );
+    }
+
+    @RequestMapping(value = "/events/{eventId}/tickets/delete/{ticketId}", method = RequestMethod.GET)
+    public ModelAndView ticketDeleteGet(Principal principal, @PathVariable String eventId, @PathVariable String ticketId) {
+        ModelAndView modelAndView = null;
+
+        try {
+            ticketService.deleteTicket(principal.getName(), eventId, ticketId);
+            modelAndView = new ModelAndView("redirect:/events/" + eventId + "/tickets");
+            modelAndView.addObject("errorMessage", "Ticket has been deleted successfully.");
+        } catch (GenericException e) {
+            modelAndView = new ModelAndView("events/create.html");
+            modelAndView.addObject("errorMessage", e.getAdditionalMessage());
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/events/{eventId}/tickets/delete/all", method = RequestMethod.GET)
+    public ModelAndView ticketDeleteAllGet(Principal principal, @PathVariable String eventId) {
+        ModelAndView modelAndView = null;
+
+        try {
+            ticketService.deleteTickets(principal.getName(), eventId);
+            modelAndView = new ModelAndView("redirect:/events/" + eventId + "/tickets");
+            modelAndView.addObject("errorMessage", "Tickets have been deleted successfully.");
+        } catch (GenericException e) {
+            modelAndView = new ModelAndView("events/create.html");
+            modelAndView.addObject("errorMessage", e.getAdditionalMessage());
+        }
+
+        return modelAndView;
     }
 }
