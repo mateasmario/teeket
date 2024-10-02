@@ -19,14 +19,17 @@
         <td><strong>Name</strong></td>
         <td><strong>Creation date</strong></td>
         <td><strong>Type</strong></td>
+        <td><strong>Moderation Code</strong></td>
         <td><strong>Actions</strong></td>
         </thead>
         <tr th:each="event : ${eventList}">
             <td th:text="${event.name}"></td>
             <td th:text="${#temporals.format(event.creationDate, 'MMM dd, yyyy')}"></td>
             <td th:text="${event.eventType}"></td>
+            <td th:text="${event.moderationCode}"></td>
             <td class="button-container">
                 <a th:href="@{/events/{eventId}/tickets(eventId=${event.id})}"><button>View Tickets</button></a>
+                <a th:href="@{/events/{eventId}/regenerate(eventId=${event.id})}"><button>Regenerate Moderation Code</button></a>
                 <a href="#" th:data-parameter1="${event.id}" th:onclick="deleteEvent(this.getAttribute('data-parameter1'))"><button>Delete Event</button></a>
             </td>
         </tr>

@@ -26,7 +26,7 @@ public class TicketController {
     private static final String RESOURCES_DIR = Paths.get("src", "main", "resources").toString();
 
     @RequestMapping(value = "events/{eventId}/tickets", method = RequestMethod.GET)
-    public ModelAndView ticketGet(Principal principal, @PathVariable String eventId, @RequestParam(value="errorMessage", required = false) String errorMessage) {
+    public ModelAndView ticketGet(Principal principal, @PathVariable String eventId, @RequestParam(value = "errorMessage", required = false) String errorMessage) {
         ModelAndView modelAndView = new ModelAndView("tickets/list.html");
 
         List<Ticket> ticketList = null;
@@ -43,8 +43,8 @@ public class TicketController {
         return modelAndView;
     }
 
-    @RequestMapping(value="events/{eventId}/tickets/generate", method=RequestMethod.GET)
-    public ModelAndView ticketGenerateGet(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId, @RequestParam(value="errorMessage", required = false) String errorMessage) {
+    @RequestMapping(value = "events/{eventId}/tickets/generate", method = RequestMethod.GET)
+    public ModelAndView ticketGenerateGet(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId, @RequestParam(value = "errorMessage", required = false) String errorMessage) {
         ModelAndView modelAndView = new ModelAndView("tickets/generate.html");
 
         try {
@@ -62,8 +62,8 @@ public class TicketController {
         return modelAndView;
     }
 
-    @RequestMapping(value="events/{eventId}/tickets/generate", method=RequestMethod.POST)
-    public RedirectView ticketGeneratePost(Principal principal, @PathVariable String eventId, @RequestParam(value="errorMessage", required = false) String errorMessage, @RequestParam String ticketCount) {
+    @RequestMapping(value = "events/{eventId}/tickets/generate", method = RequestMethod.POST)
+    public RedirectView ticketGeneratePost(Principal principal, @PathVariable String eventId, @RequestParam(value = "errorMessage", required = false) String errorMessage, @RequestParam String ticketCount) {
         RedirectView redirectView = new RedirectView("/events/" + eventId + "/tickets");
 
         try {
@@ -127,6 +127,35 @@ public class TicketController {
             modelAndView.addObject("errorMessage", e.getAdditionalMessage());
         }
 
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/validate/{eventId}/{ticketId}", method = RequestMethod.GET)
+    public ModelAndView validateGet(@PathVariable String eventId, @RequestParam(value = "errorMessage", required = false) String errorMessage,  @PathVariable String ticketId) {
+        ModelAndView modelAndView = new ModelAndView("validate/password.html");
+        modelAndView.addObject("eventId", eventId);
+        modelAndView.addObject("ticketId", ticketId);
+
+        if (errorMessage != null) {
+            modelAndView.addObject("errorMessage", errorMessage);
+        }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/validate/{eventId}/{ticketId}", method = RequestMethod.POST)
+    public ModelAndView validatePost(@PathVariable String eventId, @PathVariable String ticketId, @RequestParam("code") String code) {
+        ModelAndView modelAndView;
+
+        try {
+            Ticket ticket = ticketService.getTicket(eventId, ticketId, code);
+            modelAndView = new ModelAndView("validate/result.html");
+            modelAndView.addObject("ticket", ticket);
+        } catch (GenericException e) {
+            modelAndView = new ModelAndView("redirect:/validate/" + eventId + "/" + ticketId);
+            modelAndView.addObject("errorMessage", e.getAdditionalMessage());
+
+        }
         return modelAndView;
     }
 }

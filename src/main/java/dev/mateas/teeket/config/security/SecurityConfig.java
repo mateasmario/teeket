@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login/**").anonymous()
                         .requestMatchers("/register/**").anonymous()
+                        .requestMatchers("/validate/**").permitAll()
                         .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/fonts/**").permitAll()
                         .requestMatchers("/brand-icons/**").permitAll()

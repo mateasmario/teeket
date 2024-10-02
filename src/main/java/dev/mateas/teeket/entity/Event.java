@@ -14,12 +14,14 @@ public class Event {
     private String name;
     private EventType eventType;
     private LocalDateTime creationDate;
+    private String moderationCode;
 
-    public Event(String owner, String name, EventType eventType, LocalDateTime creationDate) {
+    public Event(String owner, String name, EventType eventType, LocalDateTime creationDate, String moderationCode) {
         this.owner = owner;
         this.name = name;
         this.eventType = eventType;
         this.creationDate = creationDate;
+        this.moderationCode = moderationCode;
     }
 
     public String getId() {
@@ -60,5 +62,13 @@ public class Event {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getModerationCode() {
+        return moderationCode;
+    }
+
+    public void setModerationCode(String moderationCode) {
+        this.moderationCode = moderationCode;
     }
 }

@@ -1,6 +1,7 @@
 package dev.mateas.teeket.util;
 
 import dev.mateas.teeket.entity.Ticket;
+import dev.mateas.teeket.util.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
@@ -20,13 +21,13 @@ public class ZipFileGenerator {
         File zipFile;
 
         do {
-            zipId = stringGenerator.generateString(10);
+            zipId = stringGenerator.generateString(StringType.ALPHANUMERIC, 10);
             zipFile = new File(Paths.get(RESOURCES_DIR, "temp", "zip", zipId + ".zip").toString());
-        } while(zipFile.exists());
+        } while (zipFile.exists());
 
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
 
-        for(Ticket ticket : ticketList) {
+        for (Ticket ticket : ticketList) {
             writeTicketToZip(out, ticket);
         }
 

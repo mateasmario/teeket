@@ -177,3 +177,13 @@ input[type='email'], input[type='password'], input[type='text'], select {
     transition: 0.15s;
     min-height: 25px;
 }
+
+.box {
+    display: flex;
+    flex-direction: row;
+    gap: 5vh;
+}
+
+.box-element {
+    flex: 1
+}

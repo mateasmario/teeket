@@ -1,11 +1,11 @@
 package dev.mateas.teeket.util;
 
+import dev.mateas.teeket.util.type.StringType;
+
 import java.util.Random;
 
 public class StringGenerator {
-    private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    public String generateString(int length) {
+    private String generateString(String characters, int length) {
         Random random = new Random();
         String result = "";
 
@@ -15,5 +15,9 @@ public class StringGenerator {
         }
 
         return result;
+    }
+
+    public String generateString(StringType stringType, int length) {
+        return generateString(stringType.getCharacters(), length);
     }
 }

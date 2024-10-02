@@ -65,4 +65,18 @@ public class EventController {
 
         return redirectView;
     }
+
+    @RequestMapping(value="events/{id}/regenerate", method=RequestMethod.GET)
+    public RedirectView regenerate(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String id) {
+        RedirectView redirectView = new RedirectView("/events", true);
+
+        try {
+            eventService.regenerateModerationCode(principal.getName(), id);
+            redirectAttributes.addAttribute("errorMessage", "Code has been successfully regenerated.");
+        } catch (GenericException e) {
+            redirectAttributes.addAttribute("errorMessage", e.getAdditionalMessage());
+        }
+
+        return redirectView;
+    }
 }

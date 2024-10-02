@@ -4,10 +4,7 @@ import dev.mateas.teeket.entity.Event;
 import dev.mateas.teeket.entity.Ticket;
 import dev.mateas.teeket.exception.event.EventDoesNotBelongToRequesterException;
 import dev.mateas.teeket.exception.event.EventWithSpecifiedIdDoesNotExistException;
-import dev.mateas.teeket.exception.ticket.CouldNotGenerateTicketException;
-import dev.mateas.teeket.exception.ticket.CouldNotGenerateZipFileException;
-import dev.mateas.teeket.exception.ticket.TicketDoesNotBelongToSpecifiedEventIdException;
-import dev.mateas.teeket.exception.ticket.TicketWithSpecifiedIdDoesNotExist;
+import dev.mateas.teeket.exception.ticket.*;
 import dev.mateas.teeket.repository.EventRepository;
 import dev.mateas.teeket.repository.TicketRepository;
 import dev.mateas.teeket.type.TicketStatus;
@@ -15,6 +12,7 @@ import dev.mateas.teeket.util.FileManagementUtils;
 import dev.mateas.teeket.util.QRCodeGenerator;
 import dev.mateas.teeket.util.StringGenerator;
 import dev.mateas.teeket.util.ZipFileGenerator;
+import dev.mateas.teeket.util.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +55,7 @@ public class TicketService {
         return ticketList;
     }
 
-    public long getAvailableTicketCount(String username, String eventId) throws TicketWithSpecifiedIdDoesNotExist, EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException {
+    public long getAvailableTicketCount(String username, String eventId) throws TicketWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
         if (eventOptional.isEmpty()) {
@@ -106,7 +104,7 @@ public class TicketService {
         boolean exists = false;
 
         do {
-            ticketId = stringGenerator.generateString(10);
+            ticketId = stringGenerator.generateString(StringType.ALPHANUMERIC,10);
             exists = ticketRepository.findById(ticketId).isPresent();
         } while(exists);
 
@@ -153,7 +151,7 @@ public class TicketService {
         return zipName;
     }
 
-    public void deleteTicket(String username, String eventId, String ticketId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExist, TicketDoesNotBelongToSpecifiedEventIdException {
+    public void deleteTicket(String username, String eventId, String ticketId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExistException, TicketDoesNotBelongToSpecifiedEventIdException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
         if (eventOptional.isEmpty()) {
@@ -169,7 +167,7 @@ public class TicketService {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
 
         if (!ticketOptional.isPresent()) {
-            throw new TicketWithSpecifiedIdDoesNotExist();
+            throw new TicketWithSpecifiedIdDoesNotExistException();
         }
 
         Ticket ticket = ticketOptional.get();
@@ -181,7 +179,7 @@ public class TicketService {
         ticketRepository.delete(ticket);
     }
 
-    public void deleteTickets(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExist, TicketDoesNotBelongToSpecifiedEventIdException {
+    public void deleteTickets(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExistException, TicketDoesNotBelongToSpecifiedEventIdException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
         if (eventOptional.isEmpty()) {
@@ -193,5 +191,25 @@ public class TicketService {
         }
 
         ticketRepository.deleteByEvent(eventId);
+    }
+
+    public Ticket getTicket(String eventId, String ticketId, String code) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExistException, TicketDoesNotBelongToSpecifiedEventIdException, EventCodeIsInvalidException {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if (eventOptional.isEmpty()) {
+            throw new EventWithSpecifiedIdDoesNotExistException();
+        }
+
+        if (!eventOptional.get().getModerationCode().equals(code)) {
+            throw new EventCodeIsInvalidException();
+        }
+
+        Optional<Ticket> ticketOptional = ticketRepository.findByCode(ticketId);
+
+        if (ticketOptional.isEmpty()) {
+            throw new TicketWithSpecifiedIdDoesNotExistException();
+        }
+
+        return ticketOptional.get();
     }
 }
