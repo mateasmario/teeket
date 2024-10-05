@@ -3,9 +3,13 @@ package dev.mateas.teeket.type;
 public enum TicketStatus {
     VALID("VALID"), MANUALLY_INVALIDATED("MANUALLY_INVALIDATED"), INVALID("INVALID");
 
-    private String value;
+    private final String value;
 
-    private TicketStatus(String value) {
+    TicketStatus(String value) {
         this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

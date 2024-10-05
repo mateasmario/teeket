@@ -27,8 +27,7 @@ public class EventService {
     private StringGenerator stringGenerator;
 
     public List<Event> getEvents(String username) {
-        List<Event> eventList = eventRepository.findByOwner(username);
-        return eventList;
+        return eventRepository.findByOwner(username);
     }
 
     public void createEvent(String username, EventDto eventDto) throws EventNameAlreadyExistsException, EventNameTooShortException {
@@ -57,7 +56,7 @@ public class EventService {
     public void deleteEvent(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        if (!eventOptional.isPresent()) {
+        if (eventOptional.isEmpty()) {
             throw new EventWithSpecifiedIdDoesNotExistException();
         }
 
@@ -74,7 +73,7 @@ public class EventService {
     public void regenerateModerationCode(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        if (!eventOptional.isPresent()) {
+        if (eventOptional.isEmpty()) {
             throw new EventWithSpecifiedIdDoesNotExistException();
         }
 

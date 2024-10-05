@@ -9,7 +9,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class DefaultController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ModelAndView homeGET() {
-        ModelAndView modelAndView = new ModelAndView("home.html");
-        return modelAndView;
+        return new ModelAndView("home.html");
     }
 }

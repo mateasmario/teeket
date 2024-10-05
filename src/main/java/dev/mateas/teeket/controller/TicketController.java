@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
@@ -77,7 +76,7 @@ public class TicketController {
     }
 
     @RequestMapping(path = "events/{eventId}/tickets/download", method = RequestMethod.GET)
-    public ResponseEntity<FileSystemResource> downloadGET(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId) throws IOException {
+    public ResponseEntity<FileSystemResource> downloadGET(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId)  {
         String zipName = null;
 
         try {
@@ -100,7 +99,7 @@ public class TicketController {
 
     @RequestMapping(value = "/events/{eventId}/tickets/delete/{ticketId}", method = RequestMethod.GET)
     public ModelAndView ticketDeleteGet(Principal principal, @PathVariable String eventId, @PathVariable String ticketId) {
-        ModelAndView modelAndView = null;
+        ModelAndView modelAndView;
 
         try {
             ticketService.deleteTicket(principal.getName(), eventId, ticketId);
@@ -116,7 +115,7 @@ public class TicketController {
 
     @RequestMapping(value = "/events/{eventId}/tickets/delete/all", method = RequestMethod.GET)
     public ModelAndView ticketDeleteAllGet(Principal principal, @PathVariable String eventId) {
-        ModelAndView modelAndView = null;
+        ModelAndView modelAndView;
 
         try {
             ticketService.deleteTickets(principal.getName(), eventId);

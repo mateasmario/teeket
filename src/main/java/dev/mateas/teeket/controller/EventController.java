@@ -33,13 +33,12 @@ public class EventController {
 
     @RequestMapping(value = "/events/create", method = RequestMethod.GET)
     public ModelAndView eventCreateGet() {
-        ModelAndView modelAndView = new ModelAndView("events/create.html");
-        return modelAndView;
+        return new ModelAndView("events/create.html");
     }
 
     @RequestMapping(value = "/events/create", method = RequestMethod.POST)
     public ModelAndView eventCreatePost(Principal principal, @ModelAttribute EventDto eventDto) {
-        ModelAndView modelAndView = null;
+        ModelAndView modelAndView;
 
         try {
             eventService.createEvent(principal.getName(), eventDto);

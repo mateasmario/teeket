@@ -7,14 +7,14 @@ import java.util.Random;
 public class StringGenerator {
     private String generateString(String characters, int length) {
         Random random = new Random();
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         while(result.length() < length) {
             int rand = random.nextInt(0, characters.length());
-            result += characters.charAt(rand);
+            result.append(characters.charAt(rand));
         }
 
-        return result;
+        return result.toString();
     }
 
     public String generateString(StringType stringType, int length) {

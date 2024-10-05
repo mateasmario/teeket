@@ -17,8 +17,7 @@ public class RegisterController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ModelAndView registerGet() {
-        ModelAndView modelAndView = new ModelAndView("authentication/register.html");
-        return modelAndView;
+        return new ModelAndView("authentication/register.html");
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (userList.size() == 0) {
             throw new UsernameNotFoundException(
-                    String.format("Account not found for " + username + "."));
+                    "Account not found for " + username + ".");
         }
 
         User user = userList.get(0);

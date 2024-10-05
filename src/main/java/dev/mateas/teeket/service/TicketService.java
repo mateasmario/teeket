@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +35,6 @@ public class TicketService {
     @Autowired
     private ZipFileGenerator zipFileGenerator;
 
-    private static final String RESOURCES_DIR = Paths.get("src", "main", "resources").toString();
-
     public List<Ticket> getTickets(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
@@ -50,9 +47,7 @@ public class TicketService {
             throw new EventDoesNotBelongToRequesterException();
         }
 
-        List<Ticket> ticketList = ticketRepository.findByEvent(eventId);
-
-        return ticketList;
+        return ticketRepository.findByEvent(eventId);
     }
 
     public long getAvailableTicketCount(String username, String eventId) throws TicketWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, EventWithSpecifiedIdDoesNotExistException {
@@ -100,8 +95,8 @@ public class TicketService {
     }
 
     private Ticket generateCode(String eventId) throws IOException {
-        String ticketId = null;
-        boolean exists = false;
+        String ticketId;
+        boolean exists;
 
         do {
             ticketId = stringGenerator.generateString(StringType.ALPHANUMERIC,10);
@@ -144,7 +139,9 @@ public class TicketService {
         for(Ticket ticket : ticketList) {
             File file = new File(FileManagementUtils.getBarcodeName(ticket));
             if (file.exists()) {
-                boolean res = file.delete();
+                if (!file.delete()) {
+                    throw new CouldNotGenerateZipFileException();
+                }
             }
         }
 
@@ -162,11 +159,9 @@ public class TicketService {
             throw new EventDoesNotBelongToRequesterException();
         }
 
-        Event event = eventOptional.get();
-
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
 
-        if (!ticketOptional.isPresent()) {
+        if (ticketOptional.isEmpty()) {
             throw new TicketWithSpecifiedIdDoesNotExistException();
         }
 
