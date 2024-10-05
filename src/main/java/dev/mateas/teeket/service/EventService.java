@@ -86,4 +86,14 @@ public class EventService {
         event.setModerationCode(moderationCode);
         eventRepository.save(event);
     }
+
+    public Event getEvent(String eventId) throws EventWithSpecifiedIdDoesNotExistException {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if (eventOptional.isEmpty()) {
+            throw new EventWithSpecifiedIdDoesNotExistException();
+        }
+
+        return eventOptional.get();
+    }
 }

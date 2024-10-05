@@ -14,6 +14,8 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 1vh;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 a {
@@ -73,7 +75,6 @@ a {
 }
 
 .main {
-    flex: 1;
     background-color: #f2f2f2;
     border-radius: 20px;
     color: black;
@@ -84,6 +85,19 @@ a {
     font-size: 15px;
     padding: 2vh;
     box-shadow: 2.5px 2.5px 2.5px #c2c2c2;
+}
+
+.main-clean {
+    height: 100vh;
+    flex: 1;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    font-family: Lato;
+    font-size: 15px;
+    justify-content: center;
+    align-items: center;
 }
 
 .notification {
@@ -105,6 +119,10 @@ button {
     box-shadow: 0px 0.25px 1.5px #8a8a8a;
     transition: 0.15s;
     color: black;
+}
+
+.button-full {
+    width: 100%;
 }
 
 button:hover {
@@ -145,6 +163,7 @@ fieldset {
 .button-container {
     display: flex;
     gap: 1vh;
+    width: 100%;
 }
 
 .form-input {
@@ -168,6 +187,14 @@ fieldset {
     gap: 1.5vh;
 }
 
+.form-small {
+    width: 30vh;
+}
+
+.form-medium {
+    width: 40vh;
+}
+
 input[type='email'], input[type='password'], input[type='text'], select {
     background-color: #e6e6e6;
     font-family: Lato;
@@ -186,4 +213,20 @@ input[type='email'], input[type='password'], input[type='text'], select {
 
 .box-element {
     flex: 1
+}
+
+.error {
+    color: red;
+}
+
+.box-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+}
+
+.box-elements {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
 }

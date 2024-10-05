@@ -1,36 +1,26 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate - Teeket</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
-    <title>Home - Teeket</title>
 </head>
 <body>
-<div th:insert="~{navbar.html :: navbar}"></div>
 
-<div class="main">
-    <h1>Valid</h1>
-    <div class="box" style="width: 100%">
-        <div class="box-element">
-            <h2>Active Events</h2>
-            <p>0 active events</p>
+<div class="main-clean">
+    <fieldset class="form form-medium">
+        <div class="box-info">
+            <div class="box-elements">
+                <h3>Ticket is <span th:text="${ticket.status}"></span></h3>
+                <div>Generated on: <span th:text="${#temporals.format(ticket.creationDate, 'MMM dd, yyyy (HH:mm)')}"></span></div>
+                <div>Event name: <span th:text="${event.name}"></span></div>
+                <div>Event type: <span th:text="${event.eventType}"></span></div>
+            </div>
+            <div class="button-container">
+                <button type="Submit" class="button-full">Invalidate</button>
+            </div>
         </div>
-        <div class="box-element">
-            <h2>Valid Tickets</h2>
-            <p>0 valid tickets</p>
-        </div>
-        <div class="box-element">
-            <h2>Invalidated Tickets</h2>
-            <p>0 invalidated tickets</p>
-        </div>
-        <div class="box-element">
-            <h2>Latest Event Updates</h2>
-            <p>No event updates.</p>
-        </div>
-    </div>
+    </fieldset>
 </div>
 </body>
 </html>

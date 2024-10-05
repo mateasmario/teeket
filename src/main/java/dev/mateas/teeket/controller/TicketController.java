@@ -1,7 +1,10 @@
 package dev.mateas.teeket.controller;
 
+import dev.mateas.teeket.entity.Event;
 import dev.mateas.teeket.entity.Ticket;
 import dev.mateas.teeket.exception.GenericException;
+import dev.mateas.teeket.exception.event.EventWithSpecifiedIdDoesNotExistException;
+import dev.mateas.teeket.service.EventService;
 import dev.mateas.teeket.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -19,6 +22,8 @@ import java.util.List;
 
 @Controller
 public class TicketController {
+    @Autowired
+    private EventService eventService;
     @Autowired
     private TicketService ticketService;
 
@@ -131,9 +136,15 @@ public class TicketController {
 
     @RequestMapping(value = "/validate/{eventId}/{ticketId}", method = RequestMethod.GET)
     public ModelAndView validateGet(@PathVariable String eventId, @RequestParam(value = "errorMessage", required = false) String errorMessage,  @PathVariable String ticketId) {
-        ModelAndView modelAndView = new ModelAndView("validate/password.html");
-        modelAndView.addObject("eventId", eventId);
-        modelAndView.addObject("ticketId", ticketId);
+        ModelAndView modelAndView;
+        try {
+            eventService.getEvent(eventId);
+            modelAndView = new ModelAndView("validate/password.html");
+            modelAndView.addObject("eventId", eventId);
+            modelAndView.addObject("ticketId", ticketId);
+        } catch (GenericException e) {
+            modelAndView = new ModelAndView("redirect:/");
+        }
 
         if (errorMessage != null) {
             modelAndView.addObject("errorMessage", errorMessage);
@@ -148,8 +159,10 @@ public class TicketController {
 
         try {
             Ticket ticket = ticketService.getTicket(eventId, ticketId, code);
+            Event event = eventService.getEvent(eventId);
             modelAndView = new ModelAndView("validate/result.html");
             modelAndView.addObject("ticket", ticket);
+            modelAndView.addObject("event", event);
         } catch (GenericException e) {
             modelAndView = new ModelAndView("redirect:/validate/" + eventId + "/" + ticketId);
             modelAndView.addObject("errorMessage", e.getAdditionalMessage());
