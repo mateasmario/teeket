@@ -6,6 +6,7 @@ import dev.mateas.teeket.exception.GenericException;
 import dev.mateas.teeket.exception.event.EventWithSpecifiedIdDoesNotExistException;
 import dev.mateas.teeket.service.EventService;
 import dev.mateas.teeket.service.TicketService;
+import dev.mateas.teeket.type.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -81,7 +82,7 @@ public class TicketController {
     }
 
     @RequestMapping(path = "events/{eventId}/tickets/download", method = RequestMethod.GET)
-    public ResponseEntity<FileSystemResource> downloadGET(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId)  {
+    public ResponseEntity<FileSystemResource> downloadGET(Principal principal, RedirectAttributes redirectAttributes, @PathVariable String eventId) {
         String zipName = null;
 
         try {
@@ -135,7 +136,7 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/validate/{eventId}/{ticketId}", method = RequestMethod.GET)
-    public ModelAndView validateGet(@PathVariable String eventId, @RequestParam(value = "errorMessage", required = false) String errorMessage,  @PathVariable String ticketId) {
+    public ModelAndView validateGet(@PathVariable String eventId, @RequestParam(value = "errorMessage", required = false) String errorMessage, @PathVariable String ticketId) {
         ModelAndView modelAndView;
         try {
             eventService.getEvent(eventId);
@@ -163,10 +164,29 @@ public class TicketController {
             modelAndView = new ModelAndView("validate/result.html");
             modelAndView.addObject("ticket", ticket);
             modelAndView.addObject("event", event);
+            modelAndView.addObject("code", code);
         } catch (GenericException e) {
             modelAndView = new ModelAndView("redirect:/validate/" + eventId + "/" + ticketId);
             modelAndView.addObject("errorMessage", e.getAdditionalMessage());
+        }
+        return modelAndView;
+    }
 
+    @RequestMapping(value = "/validate/{eventId}/{ticketId}/setstatus/{ticketStatus}", method = RequestMethod.POST)
+    public ModelAndView invalidatePost(@PathVariable String eventId, @PathVariable String ticketId, @PathVariable String ticketStatus, @RequestParam("code") String code) {
+        ModelAndView modelAndView;
+
+        try {
+            ticketService.setTicketStatus(eventId, ticketId, code, TicketStatus.valueOf(ticketStatus));
+            Ticket ticket = ticketService.getTicket(eventId, ticketId, code);
+            Event event = eventService.getEvent(eventId);
+            modelAndView = new ModelAndView("validate/result.html");
+            modelAndView.addObject("ticket", ticket);
+            modelAndView.addObject("event", event);
+            modelAndView.addObject("code", code);
+        } catch (GenericException e) {
+            modelAndView = new ModelAndView("redirect:/validate/" + eventId + "/" + ticketId);
+            modelAndView.addObject("errorMessage", e.getAdditionalMessage());
         }
         return modelAndView;
     }

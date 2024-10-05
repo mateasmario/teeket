@@ -1,7 +1,7 @@
 package dev.mateas.teeket.type;
 
 public enum TicketStatus {
-    VALID("VALID"), MANUALLY_INVALIDATED("MANUALLY_INVALIDATED"), INVALID("INVALID");
+    VALID("VALID"), MANUALLY_INVALIDATED("MANUALLY_INVALIDATED");
 
     private final String value;
 

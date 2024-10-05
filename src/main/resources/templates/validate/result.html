@@ -12,13 +12,25 @@
         <div class="box-info">
             <div class="box-elements">
                 <h3>Ticket is <span th:text="${ticket.status}"></span></h3>
-                <div>Generated on: <span th:text="${#temporals.format(ticket.creationDate, 'MMM dd, yyyy (HH:mm)')}"></span></div>
+                <div>Generated on: <span
+                        th:text="${#temporals.format(ticket.creationDate, 'MMM dd, yyyy (HH:mm)')}"></span></div>
                 <div>Event name: <span th:text="${event.name}"></span></div>
                 <div>Event type: <span th:text="${event.eventType}"></span></div>
             </div>
-            <div class="button-container">
-                <button type="Submit" class="button-full">Invalidate</button>
-            </div>
+            <form th:if="${ticket.status.getValue() == 'VALID'}" th:action="@{/validate/{eventId}/{ticketId}/setstatus/MANUALLY_INVALIDATED(eventId=${event.id}, ticketId=${ticket.code})}" method="POST"
+                  class="customForm">
+                <div class="button-container">
+                    <input type="hidden" name="code" th:value="${code}">
+                    <button type="Submit" class="button-full">Invalidate</button>
+                </div>
+            </form>
+            <form th:if="${ticket.status.getValue() == 'MANUALLY_INVALIDATED'}" th:action="@{/validate/{eventId}/{ticketId}/setstatus/VALID(eventId=${event.id}, ticketId=${ticket.code})}" method="POST"
+                  class="customForm">
+                <div class="button-container">
+                    <input type="hidden" name="code" th:value="${code}">
+                    <button type="Submit" class="button-full">Revalidate</button>
+                </div>
+            </form>
         </div>
     </fieldset>
 </div>

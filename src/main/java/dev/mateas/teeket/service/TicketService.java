@@ -207,4 +207,26 @@ public class TicketService {
 
         return ticketOptional.get();
     }
+
+    public void setTicketStatus(String eventId, String ticketId, String code, TicketStatus ticketStatus) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, TicketWithSpecifiedIdDoesNotExistException, TicketDoesNotBelongToSpecifiedEventIdException, EventCodeIsInvalidException {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if (eventOptional.isEmpty()) {
+            throw new EventWithSpecifiedIdDoesNotExistException();
+        }
+
+        if (!eventOptional.get().getModerationCode().equals(code)) {
+            throw new EventCodeIsInvalidException();
+        }
+
+        Optional<Ticket> ticketOptional = ticketRepository.findByCode(ticketId);
+
+        if (ticketOptional.isEmpty()) {
+            throw new TicketWithSpecifiedIdDoesNotExistException();
+        }
+
+        Ticket ticket = ticketOptional.get();
+        ticket.setStatus(ticketStatus);
+        ticketRepository.save(ticket);
+    }
 }
