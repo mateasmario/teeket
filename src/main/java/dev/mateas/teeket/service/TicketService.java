@@ -8,10 +8,7 @@ import dev.mateas.teeket.exception.ticket.*;
 import dev.mateas.teeket.repository.EventRepository;
 import dev.mateas.teeket.repository.TicketRepository;
 import dev.mateas.teeket.type.TicketStatus;
-import dev.mateas.teeket.util.FileManagementUtils;
-import dev.mateas.teeket.util.QRCodeGenerator;
-import dev.mateas.teeket.util.StringGenerator;
-import dev.mateas.teeket.util.ZipFileGenerator;
+import dev.mateas.teeket.util.*;
 import dev.mateas.teeket.util.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +29,8 @@ public class TicketService {
     private StringGenerator stringGenerator;
     @Autowired
     private QRCodeGenerator qrCodeGenerator;
+    @Autowired
+    private ImageGenerator imageGenerator;
     @Autowired
     private ZipFileGenerator zipFileGenerator;
 
@@ -106,7 +105,7 @@ public class TicketService {
         return new Ticket(ticketId, LocalDateTime.now(), TicketStatus.VALID, eventId);
     }
 
-    public String generateQRCodesAndZipFile(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, CouldNotGenerateZipFileException, CouldNotGenerateTicketException {
+    public String generateTickets(String username, String eventId) throws EventWithSpecifiedIdDoesNotExistException, EventDoesNotBelongToRequesterException, CouldNotGenerateZipFileException, CouldNotGenerateTicketException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
         if (eventOptional.isEmpty()) {
@@ -128,6 +127,14 @@ public class TicketService {
             }
         }
 
+        for(Ticket ticket : ticketList) {
+            try {
+                imageGenerator.generateTicketImages(event, ticket);
+            } catch (IOException e) {
+                throw new CouldNotGenerateTicketException();
+            }
+        }
+
         String zipName;
 
         try {
@@ -137,9 +144,17 @@ public class TicketService {
         }
 
         for(Ticket ticket : ticketList) {
-            File file = new File(FileManagementUtils.getBarcodeName(ticket));
-            if (file.exists()) {
-                if (!file.delete()) {
+            File barcode = new File(FileManagementUtils.getBarcodeName(ticket));
+            File ticketImage = new File(FileManagementUtils.getTicketName(ticket));
+
+            if (barcode.exists()) {
+                if (!barcode.delete()) {
+                    throw new CouldNotGenerateZipFileException();
+                }
+            }
+
+            if (ticketImage.exists()) {
+                if (!ticketImage.delete()) {
                     throw new CouldNotGenerateZipFileException();
                 }
             }

@@ -10,4 +10,8 @@ public class FileManagementUtils {
     public static String getBarcodeName(Ticket ticket) {
         return Paths.get(RESOURCES_DIR, "temp", "barcodes", "QR_" + ticket.getEvent() + "_" + ticket.getCode() + ".png").toString();
     }
+
+    public static String getTicketName(Ticket ticket) {
+        return Paths.get(RESOURCES_DIR, "temp", "tickets", "TICKET_" + ticket.getEvent() + "_" + ticket.getCode() + ".png").toString();
+    }
 }

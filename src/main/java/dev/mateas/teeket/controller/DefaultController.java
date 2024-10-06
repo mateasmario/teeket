@@ -12,6 +12,7 @@ public class DefaultController {
     public ModelAndView homeGET(@RequestParam(value="errorMessage", required = false) String errorMessage) {
         ModelAndView modelAndView = new ModelAndView("home.html");
         if (errorMessage != null) {
+            System.out.println(errorMessage);
             modelAndView.addObject("errorMessage", errorMessage);
         }
         return modelAndView;

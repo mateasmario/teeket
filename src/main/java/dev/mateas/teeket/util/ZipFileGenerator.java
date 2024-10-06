@@ -37,7 +37,7 @@ public class ZipFileGenerator {
     }
 
     private void writeTicketToZip(ZipOutputStream out, Ticket ticket) throws IOException {
-        String barcodeName = FileManagementUtils.getBarcodeName(ticket);
+        String barcodeName = FileManagementUtils.getTicketName(ticket);
         File barcode = new File(barcodeName);
         byte[] data = readData(barcode);
 

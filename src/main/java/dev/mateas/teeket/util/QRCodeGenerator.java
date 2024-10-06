@@ -19,7 +19,7 @@ public class QRCodeGenerator {
         settings.setType(BarCodeType.QR_Code);
         settings.setData("http://192.168.1.4/validate/" + eventId + "/" + ticketId);
         settings.setData2D(ticketId);
-        settings.setShowTextOnBottom(true);
+        settings.setShowText(false);
         settings.hasBorder(false);
         settings.setX(2);
         settings.setQRCodeECL(QRCodeECL.M);

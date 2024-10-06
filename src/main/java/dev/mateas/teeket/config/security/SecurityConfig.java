@@ -38,13 +38,14 @@ public class SecurityConfig {
                 // Explicitly enable form login and specify the login page to be mapped at "/login"
                 .formLogin(form -> form.loginPage("/login").permitAll())
                 .oauth2Login(form -> form.loginPage("/login").permitAll())
-                .logout((logout) -> logout.logoutUrl("/logout").logoutSuccessUrl("/").permitAll())
+                .logout((logout) -> logout.logoutUrl("/logout").logoutSuccessUrl("/login").permitAll())
 
                 // Specify required authentication levels for URL mappings
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login/**").anonymous()
                         .requestMatchers("/register/**").anonymous()
                         .requestMatchers("/events/**").authenticated()
+                        .requestMatchers("/").authenticated()
                         .anyRequest().permitAll());
 
         return http.build();

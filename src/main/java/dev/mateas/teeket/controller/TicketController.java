@@ -3,7 +3,6 @@ package dev.mateas.teeket.controller;
 import dev.mateas.teeket.entity.Event;
 import dev.mateas.teeket.entity.Ticket;
 import dev.mateas.teeket.exception.GenericException;
-import dev.mateas.teeket.exception.event.EventWithSpecifiedIdDoesNotExistException;
 import dev.mateas.teeket.service.EventService;
 import dev.mateas.teeket.service.TicketService;
 import dev.mateas.teeket.type.TicketStatus;
@@ -86,7 +85,7 @@ public class TicketController {
         String zipName = null;
 
         try {
-            zipName = ticketService.generateQRCodesAndZipFile(principal.getName(), eventId);
+            zipName = ticketService.generateTickets(principal.getName(), eventId);
         } catch (GenericException e) {
             // ToDo: Add error message
         }
